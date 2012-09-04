@@ -111,7 +111,9 @@ def read_files_from_directory(input_dir, extensions = [".mp3", ".wma"]):
             if extension not in extensions:
                 continue
 
-            entries.append(os.path.join(dirname, filename))
+            path = os.path.join(dirname, filename)
+            path = os.path.normpath(path)
+            entries.append(path)
 
     return entries
 
