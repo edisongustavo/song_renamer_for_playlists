@@ -6,6 +6,8 @@ Created on Sep 3, 2012
 import os
 import collections
 import random
+import math
+import shutil
 
 class Entry(object):
     def __init__(self, label = None, quantity = None, path = None):
@@ -97,7 +99,7 @@ def read_files_from_directory(input_dir, extensions = [".mp3", ".wma"]):
     @return: [filename1, filename2...]
     '''
     entries = []
-    for dirname, dirnames, filenames in os.walk(input_dir):
+    for dirname, _, filenames in os.walk(input_dir):
         for filename in filenames:
             extension = os.path.splitext(filename)[1]
             if extension not in extensions:
@@ -109,6 +111,40 @@ def read_files_from_directory(input_dir, extensions = [".mp3", ".wma"]):
 
     return entries
 
+def generate_filenames(filenames):
+    '''
+    Generates a list of tuples like this: (ordered_name, original_filename).
+    The ordered_name is like this so that when sorting this list alphabetically,
+    the names will be kept in the same order
+     
+    @param filenames: [string]
+    @return [(string, string)]
+    '''
+    if len(filenames) == 0:
+        return []
+
+    filenames = [os.path.normpath(f) for f in filenames]
+
+    common_path = os.path.commonprefix(filenames)
+
+    #The common path might be referring to a file (in case all filenames are equal)
+    if os.path.splitext(common_path)[1] != '':
+        common_path = os.path.split(common_path)[0]
+
+    #do actual renaming
+    renamed_filenames = []
+    padding_zeroes = int(math.floor(math.log(len(filenames), 10))) + 1 #taken from: http://www.mathpath.org/concepts/Num/numdigits.htm
+    for i in xrange(len(filenames)):
+        renamed_filename = str(i + 1).zfill(padding_zeroes) + " - "
+        p = filenames[i]
+        p = p.replace(common_path, '', 1)
+        p = p.replace("\\", '_')
+        p = p.replace("/", '_')
+        renamed_filename += p
+
+        renamed_filenames.append((renamed_filename, filenames[i]))
+
+    return renamed_filenames
 
 def __read_all_files(playlist):
     '''
@@ -121,7 +157,27 @@ def __read_all_files(playlist):
 
     return all_files
 
-def execute_and_fetch_songs(playlist_filename):
+def fetch_songs(playlist_filename):
     playlist = Playlist(open(playlist_filename, 'r').read())
     all_files = __read_all_files(playlist)
     return pick_songs_from_available_files(playlist, all_files)
+
+def copy_songs(filenames, output_dirname):
+    '''
+    Copies to the @param(output_dirname) all the files from @param(filenames)
+    
+    @param filenames: [(string, string)] -> (destiny_filename, original_filename)
+    @param output_dirname: string
+    '''
+    if len(filenames) == 0:
+        return
+
+    if not os.path.exists(output_dirname):
+        os.mkdir(output_dirname)
+
+    total_copied = 0
+    for file_to, file_from in filenames:
+        size = os.path.getsize(file_from)
+        total_copied += size
+        print("{0:.1f} MB Copying the file '{1}'".format(size / 1024.0 / 1024.0, os.path.basename(file_from)))
+        shutil.copy2(file_from, os.path.join(output_dirname, file_to))

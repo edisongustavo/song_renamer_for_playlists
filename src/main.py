@@ -3,7 +3,7 @@ Created on Sep 3, 2012
 
 @author: Edison Gustavo Muenz
 '''
-from organizer.mp3_organizer import execute_and_fetch_songs
+from organizer.mp3_organizer import fetch_songs, copy_songs, generate_filenames
 import sys
 import platform
 import subprocess
@@ -13,7 +13,7 @@ def main():
     filename = "playlist.txt"
     if len(sys.argv) > 1:
         filename = sys.argv[1]
-        
+
     if not os.path.exists(filename):
         if platform.system() == "Windows":
             with open("playlist.txt", 'w') as f:
@@ -34,9 +34,8 @@ SambaRapido=c:\musicas\Sambas\samba rapido
             return
 
     print("Reading songs from %s " % filename)
-    songs = execute_and_fetch_songs(filename)
-    for song in songs:
-        print(song)
+    songs = fetch_songs(filename)
+    copy_songs(generate_filenames(songs), 'output')
 
 if __name__ == '__main__':
     main()

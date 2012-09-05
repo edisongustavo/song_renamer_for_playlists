@@ -5,7 +5,7 @@ Created on Sep 3, 2012
 '''
 import unittest
 from organizer.mp3_organizer import Playlist, read_files_from_directory, \
-    pick_songs_from_available_files, execute_and_fetch_songs
+    pick_songs_from_available_files, fetch_songs, generate_filenames
 import random
 import os
 
@@ -179,8 +179,8 @@ class Test(unittest.TestCase):
         self.assertEqual(list(), read_files_from_directory("inexistent_dir"))
         self.assertEqual(list(), read_files_from_directory(""))
 
-    def testExecuteAndFetchSongs(self):
-        songs = execute_and_fetch_songs("songs/playlist.txt")
+    def testFetchSongs(self):
+        songs = fetch_songs("songs/playlist.txt")
         self.assertEqual(3, len(songs))
 
         self.assertItemsEqual(
@@ -188,6 +188,36 @@ class Test(unittest.TestCase):
                                os.path.normpath("songs/zouk/zouk1.mp3")],
                               songs[0:2])
         self.assertEqual(os.path.normpath("songs/forro/forro1.mp3"), songs[2])
+
+    def testGenerateFilenames(self):
+        self.assertEqual([], generate_filenames([]))
+
+        songs = ["song1.mp3", "dir1/song2.mp3", "dir2/song2.mp3"]
+        self.assertEqual([("1 - song1.mp3", "song1.mp3"),
+                          ("2 - dir1_song2.mp3", "dir1/song2.mp3"),
+                          ("3 - dir2_song2.mp3", "dir2/song2.mp3")],
+                         generate_filenames(songs))
+
+        renamed_filenames = [renamed_filename for renamed_filename, _ in generate_filenames(songs)]
+        self.assertEqual(["1 - song1.mp3", "2 - dir1_song2.mp3", "3 - dir2_song2.mp3"], sorted(renamed_filenames))
+
+    def testGenerateFilenames_addPaddingZeroes(self):
+        songs = generate_filenames(["song1.mp3"] * 100)
+        self.assertEqual(("001 - song1.mp3", "song1.mp3"), songs[0])
+        self.assertEqual(("002 - song1.mp3", "song1.mp3"), songs[1])
+        self.assertEqual(("100 - song1.mp3", "song1.mp3"), songs[99])
+
+    def testGenerateFilenames_commonPath(self):
+        songs = [r"root\common_path\dir1\song1.mp3", "root\common_path\song2.mp3", "root\common_path\dir2\song2.mp3"]
+        renamed_filenames = [renamed_filename for renamed_filename, _ in generate_filenames(songs)]
+        self.assertEqual(["1 - dir1_song1.mp3", "2 - song2.mp3", "3 - dir2_song2.mp3"], renamed_filenames)
+
+        songs = ["root/common_path/dir1/song1.mp3", "root/common_path/song2.mp3", "root/common_path/dir2/song2.mp3"]
+        renamed_filenames = [renamed_filename for renamed_filename, _ in generate_filenames(songs)]
+        self.assertEqual(["1 - dir1_song1.mp3", "2 - song2.mp3", "3 - dir2_song2.mp3"], renamed_filenames)
+
+
+
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

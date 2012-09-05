@@ -1,0 +1,11 @@
+forro=/home/edison/Music/Forró
+zouk=/home/edison/Music/Zouk
+samba=/home/edison/Music/Samba
+
+1 zouk
+2 forro
+2 samba
+
+1 zouk
+2 forro
+2 samba
