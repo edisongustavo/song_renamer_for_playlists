@@ -26,7 +26,7 @@ Samba=C:\Musicas\samba
         self.assertEqual(3, len(organizer.entries))
         entry = organizer.entries[0]
         self.assertEqual(3, entry.quantity)
-        self.assertEqual("Zouk", entry.label)
+        self.assertEqual("zouk", entry.label)
         self.assertEqual(r"c:\Musicas\zouk", entry.path)
 
     def testSpecifyLabelsAfterSonglist(self):
@@ -44,7 +44,7 @@ Samba=C:\Musicas\samba
         self.assertEqual(3, len(organizer.entries))
         entry = organizer.entries[0]
         self.assertEqual(3, entry.quantity)
-        self.assertEqual("Zouk", entry.label)
+        self.assertEqual("zouk", entry.label)
         self.assertEqual(r"c:\Musicas\zouk", entry.path)
 
     def testLabelAppearMoreThanOnce(self):
@@ -61,7 +61,7 @@ Forro=C:\Musicas\forro
         self.assertEqual(3, len(organizer.entries))
         entry = organizer.entries[0]
         self.assertEqual(3, entry.quantity)
-        self.assertEqual("Zouk", entry.label)
+        self.assertEqual("zouk", entry.label)
         self.assertEqual(r"c:\Musicas\zouk", entry.path)
 
     def testExtraLabel(self):
@@ -79,30 +79,38 @@ Samba=C:\Musicas\samba
         self.assertEqual(3, len(organizer.entries))
         entry = organizer.entries[0]
         self.assertEqual(3, entry.quantity)
-        self.assertEqual("Zouk", entry.label)
+        self.assertEqual("zouk", entry.label)
         self.assertEqual(r"c:\Musicas\zouk", entry.path)
-        
-    def testLabelWithSpaceAndCaseInsensitive(self):
+
+    def testLabel_Space_CaseInsensitive_IsTrimmed(self):
         organizer = Playlist(
 r"""
 3 Zouk Lento
 2 Forro Rapido
+5    Samba lento    
 
-Zouk Lento=c:\Musicas\zouk lento
-Forro rapido=C:\Musicas\Forro
+Zouk Lento=C:\Musicas\zouk lento
+Forro rapido=C:\Musicas\Forro Rapido
+ Samba lento = C:\Musicas\samba bem lento  
 """
                                  )
-        self.assertEqual(2, len(organizer.entries))
+        self.assertEqual(3, len(organizer.entries))
+
         entry = organizer.entries[0]
         self.assertEqual(3, entry.quantity)
-        self.assertEqual("Zouk Lento", entry.label)
-        self.assertEqual(r"c:\Musicas\zouk lento", entry.path)
-        
+        self.assertEqual("zouk lento", entry.label)
+        self.assertEqual(r"C:\Musicas\zouk lento", entry.path)
+
         entry = organizer.entries[1]
         self.assertEqual(2, entry.quantity)
-        self.assertEqual("Forro rapido", entry.label)
-        self.assertEqual(r"c:\Musicas\Forro Rapido", entry.path)
-        
+        self.assertEqual("forro rapido", entry.label)
+        self.assertEqual(r"C:\Musicas\Forro Rapido", entry.path)
+
+        entry = organizer.entries[2]
+        self.assertEqual(5, entry.quantity)
+        self.assertEqual("samba lento", entry.label)
+        self.assertEqual(r"C:\Musicas\samba bem lento", entry.path)
+
 
 
 class TestPickSongs(unittest.TestCase):
@@ -148,10 +156,10 @@ zouk=songs/zouk
 class Test(unittest.TestCase):
     def setUp(self):
         random.seed(0)
-        
+
     def tearDown(self):
         random.seed()
-        
+
     def testReadFilesFromDirectory(self):
         fetched_songs = read_files_from_directory(r"songs/zouk")
         self.assertItemsEqual(
@@ -174,7 +182,7 @@ class Test(unittest.TestCase):
     def testExecuteAndFetchSongs(self):
         songs = execute_and_fetch_songs("songs/playlist.txt")
         self.assertEqual(3, len(songs))
-        
+
         self.assertItemsEqual(
                               [os.path.normpath("songs/zouk/zouk2.mp3"),
                                os.path.normpath("songs/zouk/zouk1.mp3")],

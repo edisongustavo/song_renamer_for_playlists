@@ -40,32 +40,24 @@ class Playlist(object):
         labels = dict()
 
         for line in lines:
-            if line.strip() == "":
+            line = line.strip()
+            if line == "":
                 continue
 
-            tokens = line.split("=")
-            if len(tokens) > 2:
-                print("[warning] Ignoring the line " + line)
-                continue
-
-            tokens = [token.strip() for token in tokens]
-            if len(tokens) == 2:
-
+            if '=' in line:
                 # Specifying a label
-                label = tokens[0]
-                path = tokens[1]
-                labels[label] = path
+                label, _, path = line.partition('=')
+                label = label.strip().lower()
+                labels[label] = path.strip()
 
-            else:
-                tokens = tokens[0].split(" ")
-
-                if len(tokens) != 2:
-                    continue
-
+            elif ' ' in line:
                 # Specifying a song entry
-                label = tokens[1]
-                quantity = int(tokens[0])
+                quantity, _, label = line.partition(" ")
+                quantity = int(quantity)
+                label = label.strip().lower()
                 self.entries.append(Entry(label, quantity))
+            else:
+                print("[warning] Ignoring the line %s" % line)
 
         # now add the path to each entry
         for entry in self.entries:
