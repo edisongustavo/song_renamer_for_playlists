@@ -6,4 +6,4 @@ Creates a playlist by picking random songs from directory by following a pre-spe
 
 To generate the executable:
 
-  PYTHONPATH=libs/pyinstaller/ python libs/pyinstaller/pyinstaller.py --onefile --name=mp3_list_creator src/main.py
+  PYTHONPATH=libraries/pyinstaller/ python libraries/pyinstaller/pyinstaller.py --onefile --name=mp3_list_creator src/main.py
