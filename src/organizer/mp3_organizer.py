@@ -9,6 +9,7 @@ import random
 import math
 import shutil
 
+
 class Entry(object):
     def __init__(self, label = None, quantity = None, path = None):
         '''
@@ -127,13 +128,13 @@ def generate_filenames(filenames):
 
     common_path = os.path.commonprefix(filenames)
 
-    #The common path might be referring to a file (in case all filenames are equal)
+    # The common path might be referring to a file (in case all filenames are equal)
     if os.path.splitext(common_path)[1] != '':
         common_path = os.path.split(common_path)[0]
 
-    #do actual renaming
+    # do actual renaming
     renamed_filenames = []
-    padding_zeroes = int(math.floor(math.log(len(filenames), 10))) + 1 #taken from: http://www.mathpath.org/concepts/Num/numdigits.htm
+    padding_zeroes = int(math.floor(math.log(len(filenames), 10))) + 1  # taken from: http://www.mathpath.org/concepts/Num/numdigits.htm
     for i in xrange(len(filenames)):
         renamed_filename = str(i + 1).zfill(padding_zeroes) + " - "
         p = filenames[i]

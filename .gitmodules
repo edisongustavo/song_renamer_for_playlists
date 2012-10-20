@@ -1,0 +1,3 @@
+[submodule "libs"]
+	path = libs/pyinstaller
+	url = https://github.com/pyinstaller/pyinstaller.git
