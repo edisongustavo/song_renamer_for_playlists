@@ -148,7 +148,7 @@ zouk=songs/zouk
 """)
         available_files = {"forro" : ["songs/forro/forro1.mp3", "songs/forro/forro2.mp3"], "zouk" : ["songs/zouk/zouk1.mp3"]}
 
-        random.seed(0) #This seed makes it always sort the second item from the list
+        random.seed(0)  # This seed makes it always sort the second item from the list
         mp3_list = pick_songs_from_available_files(playlist, available_files)
         self.assertListEqual(["songs/forro/forro1.mp3", "songs/zouk/zouk1.mp3", "songs/forro/forro2.mp3"], mp3_list)
 
@@ -183,16 +183,19 @@ class Test(unittest.TestCase):
         songs = fetch_songs("songs/playlist.txt")
         self.assertEqual(3, len(songs))
 
-        self.assertItemsEqual(
-                              [os.path.normpath("songs/zouk/zouk2.mp3"),
-                               os.path.normpath("songs/zouk/zouk1.mp3")],
+        self.assertItemsEqual(self.convert_filelist(
+                              ["songs/zouk/zouk2.mp3",
+                               "songs/zouk/zouk1.mp3"]),
                               songs[0:2])
         self.assertEqual(os.path.normpath("songs/forro/forro1.mp3"), songs[2])
+
+    def convert_filelist(self, files):
+        return [os.path.normpath(f) for f in files]
 
     def testGenerateFilenames(self):
         self.assertEqual([], generate_filenames([]))
 
-        songs = ["song1.mp3", "dir1/song2.mp3", "dir2/song2.mp3"]
+        songs = self.convert_filelist(["song1.mp3", "dir1/song2.mp3", "dir2/song2.mp3"])
         self.assertEqual([("1 - song1.mp3", "song1.mp3"),
                           ("2 - dir1_song2.mp3", "dir1/song2.mp3"),
                           ("3 - dir2_song2.mp3", "dir2/song2.mp3")],
@@ -208,17 +211,20 @@ class Test(unittest.TestCase):
         self.assertEqual(("100 - song1.mp3", "song1.mp3"), songs[99])
 
     def testGenerateFilenames_commonPath(self):
-        songs = [r"root\common_path\dir1\song1.mp3", "root\common_path\song2.mp3", "root\common_path\dir2\song2.mp3"]
+        songs = self.convert_filelist(["root/common_path/dir1/song1.mp3", "root/common_path/song2.mp3", "root/common_path/dir2/song2.mp3"])
         renamed_filenames = [renamed_filename for renamed_filename, _ in generate_filenames(songs)]
         self.assertEqual(["1 - dir1_song1.mp3", "2 - song2.mp3", "3 - dir2_song2.mp3"], renamed_filenames)
 
-        songs = ["root/common_path/dir1/song1.mp3", "root/common_path/song2.mp3", "root/common_path/dir2/song2.mp3"]
+    def testGenerateFilenames_commonPathWithSpaces(self):
+        songs = self.convert_filelist([r"root/zouk rapido/song1.mp3", "root/zouk lento/song1.mp3"])
         renamed_filenames = [renamed_filename for renamed_filename, _ in generate_filenames(songs)]
-        self.assertEqual(["1 - dir1_song1.mp3", "2 - song2.mp3", "3 - dir2_song2.mp3"], renamed_filenames)
+        self.assertEqual(["1 - zouk rapido_song1.mp3", "2 - zouk lento_song1.mp3"], renamed_filenames)
 
-
+        songs = self.convert_filelist([r"zouk rapido/song1.mp3", "zouk lento/song1.mp3"])
+        renamed_filenames = [renamed_filename for renamed_filename, _ in generate_filenames(songs)]
+        self.assertEqual(["1 - zouk rapido_song1.mp3", "2 - zouk lento_song1.mp3"], renamed_filenames)
 
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
+    # import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

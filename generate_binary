@@ -1,0 +1,3 @@
+#!/bin/sh
+
+PYTHONPATH=libs/pyinstaller/ python libs/pyinstaller/pyinstaller.py --onefile --name=mp3_list_creator src/main.py 

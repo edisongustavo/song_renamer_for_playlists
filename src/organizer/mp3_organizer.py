@@ -132,6 +132,12 @@ def generate_filenames(filenames):
     if os.path.splitext(common_path)[1] != '':
         common_path = os.path.split(common_path)[0]
 
+    if not common_path.endswith(os.sep):
+        right_index_of_sep = common_path.rfind(os.sep)
+        common_path = common_path[:right_index_of_sep]
+        if common_path != "":
+            common_path += os.sep
+
     # do actual renaming
     renamed_filenames = []
     padding_zeroes = int(math.floor(math.log(len(filenames), 10))) + 1  # taken from: http://www.mathpath.org/concepts/Num/numdigits.htm
