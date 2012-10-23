@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?eclipse-pydev version="1.0"?><pydev_project>
 <pydev_pathproperty name="org.python.pydev.PROJECT_SOURCE_PATH">
-<path>/mp3_list_creator/src</path>
-<path>/mp3_list_creator/test</path>
+<path>/song_renamer_for_playlists/src</path>
+<path>/song_renamer_for_playlists/test</path>
+<path>/song_renamer_for_playlists/libraries/songdetails/src</path>
 </pydev_pathproperty>
 <pydev_property name="org.python.pydev.PYTHON_PROJECT_VERSION">python 2.7</pydev_property>
 <pydev_property name="org.python.pydev.PYTHON_PROJECT_INTERPRETER">Default</pydev_property>

@@ -3,7 +3,10 @@ Created on Sep 3, 2012
 
 @author: Edison Gustavo Muenz
 '''
-from organizer.mp3_organizer import fetch_songs, copy_songs, generate_filenames
+from organizer.mp3_organizer import (fetch_songs,
+                                     copy_songs,
+                                     generate_filenames,
+                                     set_ID3)
 import sys
 import platform
 import subprocess
@@ -35,7 +38,9 @@ SambaRapido=c:\musicas\Sambas\samba rapido
 
     print("Reading songs from %s " % filename)
     songs = fetch_songs(filename)
-    copy_songs(generate_filenames(songs), 'output')
+    out_files = generate_filenames(songs)
+    copy_songs(out_files, 'output')
+    set_ID3(['output' + os.sep + filename for filename, _ in out_files])
 
 if __name__ == '__main__':
     main()

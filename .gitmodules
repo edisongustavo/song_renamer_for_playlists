@@ -1,3 +1,9 @@
 [submodule "libraries/pyinstaller"]
 	path = libraries/pyinstaller
 	url = git://github.com/pyinstaller/pyinstaller.git
+[submodule "libraries/songdetails"]
+	path = libraries/songdetails
+	url = git://github.com/Ciantic/songdetails.git
+[submodule "libraries/mpeg1audio"]
+	path = libraries/mpeg1audio
+	url = git://github.com/Ciantic/mpeg1audio.git

@@ -188,3 +188,21 @@ def copy_songs(filenames, output_dirname):
         total_copied += size
         print("{0:.1f} MB Copying the file '{1}'".format(size / 1024.0 / 1024.0, os.path.basename(file_from)))
         shutil.copy2(file_from, os.path.join(output_dirname, file_to))
+
+def set_ID3(filenames):
+    '''
+    Sets the ID3 title of each file with the filename and removes all other information  
+    '''
+    import songdetails
+    for filename in filenames:
+        song_info = songdetails.scan(filename)
+        if song_info is None:
+            continue
+
+        filename = os.path.basename(filename)
+
+        song_info.title = filename
+        song_info.artist = u"Guga"
+        song_info.track = None
+        song_info.save()
+
