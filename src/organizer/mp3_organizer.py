@@ -197,12 +197,12 @@ def set_ID3(filenames):
     for filename in filenames:
         song_info = songdetails.scan(filename)
         if song_info is None:
+	    print("Skipping setting song info on %s" % filename)
             continue
 
         filename = os.path.basename(filename)
 
         song_info.title = filename
         song_info.artist = u"Guga"
-        song_info.track = None
         song_info.save()
 
